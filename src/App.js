@@ -12,18 +12,21 @@ function App() {
   //calling dispatch
   const dispatch = useDispatch();
 
-  fetch("https://api.open-meteo.com/v1/forecast?latitude=-33.9258&longitude=18.4232&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true")
-  //converting from text to obj
-  .then(res => res.json())
-  .then((result)=> {
-      //grabbing the current temp in
-      let currentTemp = result.current_weather.temperature
-          // returning current temp in Paris
-      setWeather(currentTemp)
-  }),
-  (error) => {
-      console.log(error)
+  //function for weather fetch api
+  const forecast = async () => {
+    try {
+    const api = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-33.9258&longitude=18.4232&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true")
+    //converting from text to obj
+    const result = await api.json()
+    //grabbing the current temp 
+    const currentTemp = await result.current_weather.temperature
+    // setting null usestate to current temp
+    setWeather(currentTemp)
   }
+    catch (error) {
+        console.log(error)
+    }
+  };
 
   const submitAdd = (event) => {
     event.preventDefault();
@@ -38,7 +41,8 @@ function App() {
 
   return (
     <div className="App">
-      {weather && <h2>Cape Town : {weather} C</h2>}
+      <div onLoad={forecast()}/>
+       {weather && <h2>Cape Town : {weather} C</h2>}
       <form>
         <label>Add Task<br/>  
         {/* when input field is changed its change is monitored and then set to the useState */}
