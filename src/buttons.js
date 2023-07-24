@@ -1,8 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux/es/exports';
+import { useDispatch } from 'react-redux';
 import { edit, completed, remove } from "./store/todo"
 
- export default function Buttons (props) {
+export default function Buttons (props) {
     const dispatch = useDispatch();
 
     const edits = () => {

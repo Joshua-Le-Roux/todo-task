@@ -1,9 +1,10 @@
-
 import './App.css';
-import { useDispatch, useSelector } from 'react-redux/es/exports';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { newTodo } from './store/todo';
 import { useState } from 'react';
 import Buttons from "./buttons"
+import Forecast from './weatherApi'
 
 function App() {
   const [weather, setWeather] = useState(null)
@@ -12,21 +13,10 @@ function App() {
   //calling dispatch
   const dispatch = useDispatch();
 
-  //function for weather fetch api
-  const forecast = async () => {
-    try {
-    const api = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-33.9258&longitude=18.4232&hourly=temperature_2m,relativehumidity_2m,windspeed_10m&current_weather=true")
-    //converting from text to obj
-    const result = await api.json()
-    //grabbing the current temp 
-    const currentTemp = await result.current_weather.temperature
-    // setting null usestate to current temp
-    setWeather(currentTemp)
+  const getWeather = async () => {
+    const api = await Forecast();
+    setWeather(api);
   }
-    catch (error) {
-        console.log(error)
-    }
-  };
 
   const submitAdd = (event) => {
     event.preventDefault();
@@ -41,7 +31,7 @@ function App() {
 
   return (
     <div className="App">
-      <div onLoad={forecast()}/>
+      <div onLoad={getWeather}/>
        {weather && <h2>Cape Town : {weather} C</h2>}
       <form>
         <label>Add Task<br/>  
